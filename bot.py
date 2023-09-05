@@ -144,7 +144,7 @@ def main():
     logger.info('Bot started')
     test = "6265217004:AAE_yot4SqUFrvBa1IJXgRy-kaeZm9z3Xwk"
     token = environ["test"] if "test" in environ else test
-    updater = Updater(token, update_queue)
+    updater = Updater(token, update_game)
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
