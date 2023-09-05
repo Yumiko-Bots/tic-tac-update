@@ -10,7 +10,7 @@ import logging
 import game
 from game import Game
 from emoji import Emoji
-from sets import Set
+import set 
 
 # Set TEST to False for production
 TEST = True
@@ -70,8 +70,8 @@ def get_games_count():
 def get_playing_users_count():
     x_p = filter(lambda x: 'player_id' in x, db.games.distinct('player_x'))
     o_p = filter(lambda y: 'player_id' in y, db.games.distinct('player_0'))
-    x_players = Set(map(lambda g: g['player_id'], x_p))
-    o_players = Set(map(lambda g: g['player_id'], o_p))
+    x_players = set(map(lambda g: g['player_id'], x_p))
+    o_players = set(map(lambda g: g['player_id'], o_p))
     return len(x_players | o_players)
 
 def start_or_help(bot, update):
