@@ -10,7 +10,6 @@ import logging
 import game
 from game import Game
 from emoji import Emoji
-import set 
 
 # Set TEST to False for production
 TEST = True
@@ -34,8 +33,8 @@ def clear():
 # clear()
 
 def create_new_game(bot, update):
-    game = Game(bot, update)
-    result = db.games.insert(game.to_json())
+    game_instance = Game(bot, update)
+    result = db.games.insert(game_instance.to_json())
 
     if TEST:
         results = db.games.find({"_id": result})
@@ -50,17 +49,17 @@ def find_game(game_id, bot, update):
     if result is None:
         return None
     else:
-        game = Game(bot, update, result)
-        return game
+        game_instance = Game(bot, update, result)
+        return game_instance
 
-def update_game(game):
-    result = db.games.find_one_and_replace({"game_id": game.id}, game.to_json())
+def update_game(game_instance):
+    result = db.games.find_one_and_replace({"game_id": game_instance.id}, game_instance.to_json())
 
     if TEST:
         logger.debug('After update, we get %s', str(result))
 
 def get_games_in_progress_count():
-    count = db.games.count({'status': {'$lte': game.WAITING_FOR_PLAYER}})
+    count = db.games.count({'status': {'$lte': Game.WAITING_FOR_PLAYER}})
     return count
 
 def get_games_count():
@@ -132,11 +131,11 @@ def handle_inline_callback(bot, update):
     text = query.data
     game_id = update.callback_query.inline_message_id
 
-    game_ = find_game(game_id, bot, update)
+    game_instance = find_game(game_id, bot, update)
 
-    if (game_ is not None) and (is_callback_valid(text)):
-        game_.handle(text, update)
-        update_game(game_)
+    if (game_instance is not None) and (is_callback_valid(text)):
+        game_instance.handle(text, update)
+        update_game(game_instance)
     else:
         bot.answerCallbackQuery(query.id, text="Game does not exist :(( !")
 
@@ -168,7 +167,7 @@ def main():
     updater.start_polling()
 
     # Block until the user presses Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time since
+    # SIGTERM, or SIGABRT. This should be used most of the time since
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
