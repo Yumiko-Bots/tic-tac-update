@@ -143,7 +143,7 @@ def main():
     # Create the Updater and pass it your bot's token.
     logger.info('Bot started')
     test = "6265217004:AAE_yot4SqUFrvBa1IJXgRy-kaeZm9z3Xwk"
-    token = env["test"] if "test" in env else test
+    token = environ["test"] if "test" in environ else test
     updater = Updater(token)
 
     # Get the dispatcher to register handlers
