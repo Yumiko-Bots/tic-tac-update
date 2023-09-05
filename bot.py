@@ -143,7 +143,7 @@ def main():
     # Create the Updater and pass it your bot's token.
     logger.info('Bot started')
     bot_token = "6265217004:AAE_yot4SqUFrvBa1IJXgRy-kaeZm9z3Xwk"  # Replace with your actual bot token
-    updater = Updater(bot_token)
+    updater = Updater(bot_token, use_context=True)
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
