@@ -139,12 +139,14 @@ def handle_inline_callback(bot, update):
     else:
         bot.answerCallbackQuery(query.id, text="Game does not exist :(( !")
 
+# ...
+
 def main():
     # Create the Updater and pass it your bot's token.
     logger.info('Bot started')
-    test = "6265217004:AAE_yot4SqUFrvBa1IJXgRy-kaeZm9z3Xwk"
+    test = "YOUR_BOT_TOKEN"
     token = environ.get("TOKEN", test)
-    updater = Updater(token)
+    updater = Updater(token, use_context=True)  # Add use_context=True here
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
