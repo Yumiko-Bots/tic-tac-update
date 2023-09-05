@@ -1,4 +1,5 @@
 import logging
+import telegram
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 from emoji import Emoji
@@ -21,22 +22,21 @@ EMPTY_CELL, CELL_X, CELL_O = range(3)
 
 
 def make_button(button):
+    emoji = 'ERROR'
+    if button[1] == EMPTY_CELL:
+        emoji = EMPTY
 
-        emoji = 'ERROR'
-        if button[1] == EMPTY_CELL:
-            emoji = EMPTY
+    if button[1] == CELL_X:
+        emoji = Emoji.HEAVY_MULTIPLICATION_X
 
-        if button[1] == CELL_X:
-            emoji = Emoji.HEAVY_MULTIPLICATION_X
+    if button[1] == CELL_O:
+        emoji = Emoji.HEAVY_LARGE_CIRCLE
 
-        if button[1] == CELL_O:
-            emoji = Emoji.HEAVY_LARGE_CIRCLE
-
-        return InlineKeyboardButton(emoji, callback_data=str(button[0]))
+    return InlineKeyboardButton(emoji, callback_data=str(button[0]))
 
 
 class Game:
-    """Entity for game"""
+    """Entity for the game"""
 
     def __init__(self, bot, update, json=None):
 
@@ -76,7 +76,6 @@ class Game:
         self.notified = False
 
     def handle(self, command, update):
-        # update - callback query update
         query_id = update.callback_query.id
 
         logger.info('Handled command ' + command)
@@ -110,10 +109,10 @@ class Game:
             elif command == 'notify':
 
                 if not self.notified:
-                    self.bot.reply_text(
-                        reply_to_message_id=self.id,
+                    self.bot.send_message(
+                        chat_id=self.id,
                         text=self.get_current_player().username +
-                        'make your step.')
+                        ' make your step.')
 
             else:
                 self.show_message(query_id, 'What are you trying to do?')
@@ -187,8 +186,10 @@ class Game:
 
     def set_keyboard(self, inline_message_id, keyboard):
 
-        self.bot.editMessageReplyMarkup(reply_markup=keyboard,
-                                        inline_message_id=inline_message_id)
+        self.bot.edit_message_reply_markup(
+            chat_id=inline_message_id.split(':')[0],
+            message_id=inline_message_id.split(':')[1],
+            reply_markup=keyboard)
 
     def is_completed(self, cell):
 
@@ -198,19 +199,19 @@ class Game:
         y = cell % 3
 
         logger.info(board)
-        # check if previous move caused a win on vertical line
+        # check if the previous move caused a win on the vertical line
         if board[0][y] == board[1][y] == board[2][y]:
             return True
 
-        # check if previous move caused a win on horizontal line
+        # check if the previous move caused a win on the horizontal line
         if board[x][0] == board[x][1] == board[x][2]:
             return True
 
-        # check if previous move was on the main diagonal and caused a win
+        # check if the previous move was on the main diagonal and caused a win
         if x == y and board[0][0] == board[1][1] == board[2][2]:
             return True
 
-        # check if previous move was on the secondary diagonal and caused a win
+        # check if the previous move was on the secondary diagonal and caused a win
         if x + y == 2 and board[0][2] == board[1][1] == board[2][0]:
             return True
         return False
@@ -225,7 +226,6 @@ class Game:
 
             self.map_[i] = val
             self.step += 1
-            # inline_message_id = update.callback_query.inline_message_id
             if self.is_completed(i):
                 self.step -= 1
                 self.winner = self.get_current_player()
@@ -283,10 +283,9 @@ class Game:
 
         keyboard = InlineKeyboardMarkup(
             [list(map(make_button, map_[:3])),
-                list(map(make_button, map_[3:6])),
-                list(map(make_button, map_[6:9]))])
+             list(map(make_button, map_[3:6])),
+             list(map(make_button, map_[6:9]))])
 
-        logger.debug('inline keyboard' + str(keyboard))
         return keyboard
 
     def find_player(self, update):
@@ -303,14 +302,15 @@ class Game:
 
     def show_message(self, query_id, message):
 
-        self.bot.answerCallbackQuery(query_id, message)
+        self.bot.answerCallbackQuery(callback_query_id=query_id, text=message)
 
     def set_message(self, message_id, message, keyboard=None):
-        logger.debug('message_id:' + message_id)
-        logger.info('setting message:' + message)
-
-        self.bot.editMessageText(
-            message, inline_message_id=message_id, reply_markup=keyboard)
+        chat_id, message_id = message_id.split(':')
+        self.bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=message,
+            reply_markup=keyboard)
 
     def to_json(self):
 
