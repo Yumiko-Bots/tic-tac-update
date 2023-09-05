@@ -142,9 +142,8 @@ def handle_inline_callback(bot, update):
 def main():
     # Create the Updater and pass it your bot's token.
     logger.info('Bot started')
-    test = "6265217004:AAE_yot4SqUFrvBa1IJXgRy-kaeZm9z3Xwk"
-    token = environ["test"] if "test" in environ else test
-    updater = Updater(token, update_game)
+    bot_token = "6265217004:AAE_yot4SqUFrvBa1IJXgRy-kaeZm9z3Xwk"  # Replace with your actual bot token
+    updater = Updater(bot_token)
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
@@ -156,7 +155,7 @@ def main():
     dp.add_handler(CommandHandler("rate", rate))
     # on pressing buttons from inline keyboards
     dp.add_handler(CallbackQueryHandler(handle_inline_callback))
-    # on noncommand i.e message - echo the message on Telegram
+    # on non-command i.e message - echo the message on Telegram
     dp.add_handler(InlineQueryHandler(inlinequery))
     # on creating game
     dp.add_handler(ChosenInlineResultHandler(chose_inline_result))
@@ -167,7 +166,7 @@ def main():
     updater.start_polling()
 
     # Block until the user presses Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
+    # SIGTERM, or SIGABRT. This should be used most of the time since
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
