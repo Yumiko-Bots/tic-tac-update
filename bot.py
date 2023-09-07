@@ -146,7 +146,7 @@ def main():
     updater = Updater(bot_token, update_queue=True)
 
     # Get the dispatcher to register handlers
-    dp = updater.dispatcher
+    dp = updater.job_queue
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start_or_help))
