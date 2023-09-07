@@ -143,9 +143,10 @@ def main():
     # Create the Updater and pass it your bot's token.
     logger.info('Bot started')
     bot_token = "6265217004:AAE_yot4SqUFrvBa1IJXgRy-kaeZm9z3Xwk"  # Replace with your actual bot token
-    updater = Updater(bot_token, use_context=True)
-    
-    dp = updater.job_queue
+    updater = Updater(token=bot_token)
+
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start_or_help))
