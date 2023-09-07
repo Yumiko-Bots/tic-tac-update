@@ -5,7 +5,7 @@ from uuid import uuid4
 from os import environ
 from pymongo.mongo_client import MongoClient
 from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import Updater, InlineQueryHandler, CommandHandler, CallbackQueryHandler, ChosenInlineResultHandler
+from telegram.ext import Updater, InlineQueryHandler, CommandHandler, CallbackQueryHandler, ChosenInlineResultHandler, Job, run_async
 import logging
 import game
 from game import Game
@@ -144,9 +144,8 @@ def main():
     logger.info('Bot started')
     bot_token = "6265217004:AAE_yot4SqUFrvBa1IJXgRy-kaeZm9z3Xwk"  # Replace with your actual bot token
     updater = Updater(bot_token, use_context=True)
-
-    # Get the dispatcher to register handlers
-    dp = updater.dispatcher
+    
+    dp = updater.job_queue
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start_or_help))
