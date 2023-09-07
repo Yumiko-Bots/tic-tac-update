@@ -5,7 +5,7 @@ from uuid import uuid4
 from os import environ
 from pymongo.mongo_client import MongoClient
 from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import Updater, InlineQueryHandler, CommandHandler, CallbackQueryHandler, ChosenInlineResultHandler, Job, run_async
+from telegram.ext import Updater, InlineQueryHandler, CommandHandler, CallbackQueryHandler, ChosenInlineResultHandler, Job
 import logging
 import game
 from game import Game
