@@ -143,10 +143,10 @@ def main():
     # Create the Updater and pass it your bot's token.
     logger.info('Bot started')
     bot_token = "6265217004:AAE_yot4SqUFrvBa1IJXgRy-kaeZm9z3Xwk"  # Replace with your actual bot token
-    updater = Updater(bot_token, update_queue=True)
+    updater = Updater(token=bot_token, use_context=True)
 
     # Get the dispatcher to register handlers
-    dp = updater.job_queue
+    dp = updater.dispatcher
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start_or_help))
@@ -156,7 +156,7 @@ def main():
     # on pressing buttons from inline keyboards
     dp.add_handler(CallbackQueryHandler(handle_inline_callback))
     # on non-command i.e message - echo the message on Telegram
-    dp.add_handler(InlineQueryHandler(inlinequery))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
     # on creating game
     dp.add_handler(ChosenInlineResultHandler(chose_inline_result))
     # log all errors
